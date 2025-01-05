@@ -310,19 +310,26 @@ const BookingForm = ({ onSubmitSuccess, initialValues, onCancel, isEditing }) =>
   };
 
   const handleConfirmSubmit = async () => {
+    if (!formData) return;
+    
     setShowConfirmation(false);
     setIsSubmitting(true);
+    
     try {
       const success = await addBooking(formData);
       if (success) {
         if (isEditing) {
-          onSubmitSuccess?.();
+          onSubmitSuccess?.(formData);
         } else {
+          onSubmitSuccess?.(formData);
           navigate('/booking-confirmed');
         }
+      } else {
+        throw new Error('Failed to add booking');
       }
     } catch (error) {
       console.error('Error submitting booking:', error);
+      // You might want to show an error message to the user here
     } finally {
       setIsSubmitting(false);
     }
